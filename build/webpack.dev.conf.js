@@ -12,7 +12,12 @@ const portfinder = require('portfinder')
 
 const HOST = process.env.HOST
 const PORT = process.env.PORT && Number(process.env.PORT)
-
+let processEnv;
+if(process.env.NODE_ENV == 'develpment'){
+  processEnv = require('../config/prod.env');
+}else if(process.env.NODE_ENV == 'develpment:online'){
+  processEnv = require('../config/prod.online.env.js');
+}
 const devWebpackConfig = merge(baseWebpackConfig, {
   module: {
     rules: utils.styleLoaders({ sourceMap: config.dev.cssSourceMap, usePostCSS: true })
@@ -45,8 +50,9 @@ const devWebpackConfig = merge(baseWebpackConfig, {
     }
   },
   plugins: [
+    //set node process.env variable
     new webpack.DefinePlugin({
-      'process.env': require('../config/dev.env')
+      'process.env': processEnv
     }),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NamedModulesPlugin(), // HMR shows correct file names in console on update.
